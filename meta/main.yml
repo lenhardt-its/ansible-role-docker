@@ -1,0 +1,29 @@
+---
+galaxy_info:
+  author: Dominik Lenhardt
+  description: Install and configure docker service
+  license: "MIT"
+  min_ansible_version: 2.6
+  platforms:
+    - name: EL
+      versions:
+        - 7
+        - 8
+    - name: Fedora
+      versions:
+        - all
+    - name: Debian
+      versions:
+        - stretch
+        - buster
+    - name: Ubuntu
+      versions:
+        - xenial
+        - bionic
+        - focal
+  galaxy_tags:
+    - containers
+    - docker
+    - orchestration
+    - compose
+dependencies: []

@@ -1,0 +1,62 @@
+---
+- include_tasks: setup-redhat.yml
+  when: ansible_os_family == 'RedHat'
+  tags: docker
+
+- include_tasks: setup-debian.yml
+  when: ansible_os_family == 'Debian'
+  tags: docker
+
+- name: ensure docker is started and enabled
+  service:
+    name: docker
+    state: started
+    enabled: true
+  tags: docker
+
+- name: Ensure handlers are notified now to avoid firewall conflicts.
+  meta: flush_handlers
+
+- include_tasks: docker-compose.yml
+  when: (docker_install_compose | bool) and (not go_arch == "arm64" or not go_arch == "armhf")
+  tags:
+  - docker
+  - docker-compose
+
+- name: install python for docker-compose for arm systems
+  package:
+    name: "{{ item }}"
+    state: present
+  with_items: "{{ docker_python_package }}"
+  when: (docker_install_compose | bool) and (not go_arch == "amd64")
+  tags:
+  - docker
+  - docker-compose
+
+- name: install docker-compose with pip for arm systems
+  pip:
+    name: docker-compose
+  when: (docker_install_compose | bool) and (go_arch == "arm64" or go_arch == "armhf")
+  tags:
+  - docker
+  - docker-compose
+  
+- name: ensure docker users are added to the docker group
+  user:
+    name: "{{ item }}"
+    groups: docker
+    append: true
+  with_items: "{{ docker_users }}"
+  when: docker_users | length > 0
+  tags: docker
+
+- name: configure docker daemon
+  template:
+    src: daemon.json.j2
+    dest: /etc/docker/daemon.json
+    owner: root
+    group: root
+    mode: 0644
+  notify: restart docker
+  when: docker_config is defined
+  tags: docker
