@@ -49,9 +49,10 @@
 
 - name: install docker
   package:
-    name: "{{ items }}"
+    name: "{{ item }}"
     state: present
   notify: restart docker
+  tags: docker
   with_items:
     - docker-ce
     - docker-ce-cli

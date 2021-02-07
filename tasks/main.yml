@@ -7,6 +7,17 @@
   when: ansible_os_family == 'Debian'
   tags: docker
 
+- name: configure docker daemon
+  template:
+    src: daemon.json.j2
+    dest: /etc/docker/daemon.json
+    owner: root
+    group: root
+    mode: 0644
+  notify: restart docker
+  when: docker_config is defined
+  tags: docker
+
 - name: ensure docker is started and enabled
   service:
     name: docker
@@ -16,6 +27,7 @@
 
 - name: Ensure handlers are notified now to avoid firewall conflicts.
   meta: flush_handlers
+  tags: docker
 
 - include_tasks: docker-compose.yml
   when: (docker_install_compose | bool) and (not go_arch == "arm64" or not go_arch == "armhf")
@@ -48,15 +60,4 @@
     append: true
   with_items: "{{ docker_users }}"
   when: docker_users | length > 0
-  tags: docker
-
-- name: configure docker daemon
-  template:
-    src: daemon.json.j2
-    dest: /etc/docker/daemon.json
-    owner: root
-    group: root
-    mode: 0644
-  notify: restart docker
-  when: docker_config is defined
   tags: docker
