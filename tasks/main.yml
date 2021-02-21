@@ -1,4 +1,10 @@
 ---
+- name: install pip docker-py
+  pip:
+    name: docker-py
+  tags:
+  - docker
+
 - include_tasks: setup-redhat.yml
   when: ansible_os_family == 'RedHat'
   tags: docker
