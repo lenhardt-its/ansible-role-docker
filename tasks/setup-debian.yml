@@ -49,11 +49,11 @@
 
 - name: install docker
   package:
-    name: "{{ item }}"
+    name:
+      - docker-ce
+      - docker-ce-cli
+      - containerd.io
     state: present
   notify: restart docker
   tags: docker
-  with_items:
-    - docker-ce
-    - docker-ce-cli
-    - containerd.io
+    
