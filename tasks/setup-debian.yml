@@ -56,4 +56,3 @@
     state: present
   notify: restart docker
   tags: docker
-    
