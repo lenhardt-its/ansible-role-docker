@@ -1,17 +1,11 @@
 ---
 galaxy_info:
+  role_name: docker
   author: Dominik Lenhardt
   description: Install and configure docker service
   license: "MIT"
   min_ansible_version: 2.6
   platforms:
-    - name: EL
-      versions:
-        - 7
-        - 8
-    - name: Fedora
-      versions:
-        - all
     - name: Debian
       versions:
         - stretch
